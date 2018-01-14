@@ -82,16 +82,16 @@ You can switch this off by adding `-illegal-access=deny` to the command line (th
 
 == Run Using an Explicit Classpath
 
-Java 9 supports the old command line format of Java 8, which is why the executable jar just works. We can also use an explicit class path and a main method, just to be sure that it works. First we need to generate a classpath. A useful tool for that is the https://github.com/dsyer/spring-boot-thin-launcher[Thin Jar Launcher], and in particular the `ThinJarWrapper` which can be downloaded from http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.6.RELEASE/spring-boot-thin-wrapper-1.0.6.RELEASE.jar[Maven Central]:
+Java 9 supports the old command line format of Java 8, which is why the executable jar just works. We can also use an explicit class path and a main method, just to be sure that it works. First we need to generate a classpath. A useful tool for that is the https://github.com/dsyer/spring-boot-thin-launcher[Thin Jar Launcher], and in particular the `ThinJarWrapper` which can be downloaded from http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.9.RELEASE/spring-boot-thin-wrapper-1.0.9.RELEASE.jar[Maven Central]:
 
 ```
-$ wget http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.6.RELEASE/spring-boot-thin-wrapper-1.0.6.RELEASE.jar
+$ wget http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.9.RELEASE/spring-boot-thin-wrapper-1.0.9.RELEASE.jar
 ```
 
 and then we can run the wrapper with some command line arguments to make it print the classpath for the current project:
 
 ```
-$ CP=`java -jar spring-boot-thin-wrapper-1.0.6.RELEASE.jar --thin.archive=. --thin.classpath`
+$ CP=`java -jar spring-boot-thin-wrapper-1.0.9.RELEASE.jar --thin.archive=. --thin.classpath`
 ```
 
 Then we can run our app like this (assuming the default class name from start.spring.io):
@@ -227,3 +227,13 @@ $ java -p target/demo-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m demo/c
 2017-09-08 11:49:28.011  INFO 22102 --- [           main] b.e.w.m.WebEndpointServletHandlerMapping : Mapped "{[/application/status],methods=[GET],produces=[application/vnd.spring-boot.actuator.v2+json || application/json]}" onto public java.lang.Object org.springframework.boot.endpoint.web.mvc.WebEndpointServletHandlerMapping$OperationHandler.handle(javax.servlet.http.HttpServletRequest,java.util.Map<java.lang.String, java.lang.String>)
 ...
 ```
+
+== JLink
+
+https://docs.oracle.com/javase/9/tools/jlink.htm#JSWOR-GUID-CECAC52B-CFEE-46CB-8166-F17A8E9280E9[JLink] is a JDK tool that creates a self-contained binary image for a Java program (no need for a JRE or JDK at runtime). It works with Jigsaw modules, but only with explicit modules, not automatic ones, and most of the dependencies in a Spring Boot application only provide automatic modules. So this is the kind of thing you will see if you try to build an image:
+
+```
+$ jlink -p target/demo-0.0.1-SNAPSHOT.jar:$CP:$JAVA_HOME/jmods --add-modules demo --output jre
+Error: module-info.class not found for logback.core module
+```
+
