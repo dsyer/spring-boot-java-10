@@ -66,7 +66,7 @@ $ java -jar target/spring-boot-java9-0.0.1-SNAPSHOT.jar
 ...
 ```
 
-It doesn't do anything, so the main method just finishes and the JVM exits. All good. It might be ever so slightly faster than Java 8, but the effect is probably not measurable.
+It doesn't do anything, so the main method just finishes and the JVM exits. All good. It might be faster than Java 8, but the effect is probably not measurable, and Java 8 performs better if you tweak it (see below).
 
 Spring needs to use reflection, and through CGLib it results in an illegal access, which is logged as a warning on startup:
 
