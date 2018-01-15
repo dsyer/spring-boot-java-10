@@ -1,4 +1,4 @@
-Java 9 is nearly here, and the ecosystem is adapting. If you want to run Spring Boot apps in Java 9, the good news is it works fine (mostly), so here is how to get started as quickly as possible without stumbling on the newbie errors (like I did).
+Java 9 is here, and the ecosystem is adapting. If you want to run Spring Boot apps in Java 9, the good news is it works fine (mostly), so here is how to get started as quickly as possible without stumbling on the newbie errors (like I did).
 
 == Install Java 9
 
@@ -9,29 +9,30 @@ $ sdk list java
 ================================================================================
 Available Java Versions
 ================================================================================
-     9ea14-zulu                                                                    
-     9ea13-zulu                                                                    
+     9.0.1-zulu                                                                    
+     9.0.1-oracle                                                                    
+     9.0.0-zulu                                                                    
      ...
      8u131-zulu                                                                    
      7u141-zulu                                                                    
      6u93-zulu                                                                     
-$ sdk use java 9ea14-zulu
+$ sdk use java 9.0.1-zulu
 ```
 
-This downloads and installs the JDK at `~/.sdkmain/candidates/9ea14-zulu` and puts it on your `PATH`:
+This downloads and installs the JDK at `~/.sdkmain/candidates/9.0.1-zulu` and puts it on your `PATH`:
 
 ```
 $ java -version
-openjdk version "9-ea"
-OpenJDK Runtime Environment (Zulu 9.0.0.14-linux64) (build 9-ea+181-pre-release-eval)
-OpenJDK 64-Bit Server VM (Zulu 9.0.0.14-linux64) (build 9-ea+181, mixed mode, pre-release-eval)
+openjdk version "9.0.1.3"
+OpenJDK Runtime Environment (Zulu build 9.0.1.3+11)
+OpenJDK 64-Bit Server VM (Zulu build 9.0.1.3+11, mixed mode)
 ```
 
-If you are an Eclipse user, you might want to install the Java 9 support from the https://marketplace.eclipse.org/content/java-9-support-beta-oxygen[Eclipse Marketplace] (make sure you have Eclipse Oxygen 4.7 first). You don't have to run Eclipse with Java 9, but if you do you might need to change the https://wiki.eclipse.org/Configure_Eclipse_for_Java_9[ini file]. Once you have the Java 9 features installed you can add the JDK to your `Preferences -> Java -> Installed JREs`.
+If you are an Eclipse user, you might want to install the Java 9 support from the https://marketplace.eclipse.org/content/java9-support-beta-oxygen[Eclipse Marketplace] (make sure you have Eclipse Oxygen 4.7 first). You don't have to run Eclipse with Java 9, but if you do you might need to change the https://wiki.eclipse.org/Configure_Eclipse_for_Java_9[ini file]. Once you have the Java 9 features installed you can add the JDK to your `Preferences -> Java -> Installed JREs`.
 
 == Create a Spring Boot Application
 
-You can use the source code from https://github.com/dsyer/spring-boot-java-9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.0 snapshots. Java 9 is not an option for the generator yet, but you can easily edit the `pom.xml` to update the Java version:
+You can use the source code from https://github.com/dsyer/spring-boot-java9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.0 snapshots. Java 9 is not an option for the generator yet, but you can easily edit the `pom.xml` to update the Java version:
 
 .pom.xml
 ```
@@ -46,13 +47,13 @@ The Maven wrapper that comes with the generated project, and the plugin versions
 $ ./mvnw clean install
 ...
 $ ls target/*.jar
-demo-0.0.1-SNAPSHOT.jar
+spring-boot-java9-0.0.1-SNAPSHOT.jar
 ```
 
 The jar file is executable as usual:
 
 ```
-$ java -jar target/demo-0.0.1-SNAPSHOT.jar 
+$ java -jar target/spring-boot-java9-0.0.1-SNAPSHOT.jar 
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -69,10 +70,9 @@ It doesn't do anything, so the main method just finishes and the JVM exits. All 
 
 Spring needs to use reflection, and through CGLib it results in an illegal access, which is logged as a warning on startup:
 
-
 ```
 WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by org.springframework.cglib.core.ReflectUtils$1 (jar:file:/home/dsyer/dev/demo/workspace/demo/target/demo-0.0.1-SNAPSHOT.jar!/BOOT-INF/lib/spring-core-5.0.0.BUILD-SNAPSHOT.jar!/) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
+WARNING: Illegal reflective access by org.springframework.cglib.core.ReflectUtils$1 (jar:file:/home/dsyer/dev/demo/workspace/demo/target/spring-boot-java9-0.0.1-SNAPSHOT.jar!/BOOT-INF/lib/spring-core-5.0.0.BUILD-SNAPSHOT.jar!/) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
 WARNING: Please consider reporting this to the maintainers of org.springframework.cglib.core.ReflectUtils$1
 WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
 WARNING: All illegal access operations will be denied in a future release
@@ -116,7 +116,7 @@ At this point we might decide to repackage the jar file into a thin (module) for
 
 ```
 $ ./mvnw clean install
-$ java -cp target/demo-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
+$ java -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -131,10 +131,10 @@ $ java -cp target/demo-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
 
 == Running Using Jigsaw
 
-Java 9 has other features for running applications. So instead of using the classpath we can use the Jigsaw (module system) features, relying on the "automatic modules" feature to turn all the dependency jars into modules. The command line is slightly different, but the result is the same (except that the WARN logs are not emitted):
+Java 9 has other features for running applications. So instead of using the classpath we can use the Jigsaw (module system) features, relying on "automatic modules" to turn all the dependency jars into modules. The command line is slightly different, but the result is the same (except that the WARN logs are not emitted):
 
 ```
-java -p target/demo-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m demo/com.example.demo.DemoApplication
+java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m spring.boot.java9/com.example.demo.DemoApplication
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -153,7 +153,7 @@ The app runs as before, but note that the Spring Boot version information is not
 The module path is `-p` (not `-cp`) but it is in the same format as a classpath. Automatic modules only work as jars, which is why we built the non-executable jar for the app, instead of using `target/classes`. If you try using a directory in the module path that isn't a module you will find that it is not automatically converted to a module, and there will be an error on the command line:
 
 ```
-$ java -p target/classes:$CP --add-modules ALL-DEFAULT -m demo/com.example.demo.DemoApplication
+$ java -p target/classes:$CP --add-modules ALL-DEFAULT -m spring.boot.java9/com.example.demo.DemoApplication
 Error occurred during initialization of boot layer
 java.lang.module.FindException: Module demo not found
 ```
@@ -163,7 +163,7 @@ java.lang.module.FindException: Module demo not found
 We need to add additional modules to the command line since the default is a much narrower subset that won't work with Spring Boot. If we ommit the `--add-modules ALL-DEFAULT` it breaks:
 
 ```
-$ java -p target/demo-0.0.1-SNAPSHOT.jar:$CP -m demo/com.example.demo.DemoApplication
+$ java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP -m spring.boot.java9/com.example.demo.DemoApplication
 Exception in thread "main" java.lang.IllegalArgumentException: Cannot instantiate interface org.springframework.context.ApplicationContextInitializer : org.springframework.boot.context.ConfigurationWarningsApplicationContextInitializer
 	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.createSpringFactoriesInstances(SpringApplication.java:439)
 	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.getSpringFactoriesInstances(SpringApplication.java:418)
@@ -190,10 +190,12 @@ With a classpath, or with Java 8, we provide the main class as a command line ar
 With a module path, i.e. using Jigsaw, we need to provide a `-m ...` which is in the form `<module>/<mainclass>`. If you forget that, you get a rather unhelpful error:
 
 ```
-$ java -p target/demo-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT com.example.demo.DemoApplication 
+$ java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT com.example.demo.DemoApplication 
 Error: Could not find or load main class com.example.demo.DemoApplication
 Caused by: java.lang.ClassNotFoundException: com.example.demo.DemoApplication
 ```
+
+The module name is the "automatic" one (the jar name with "." instead of "-").
 
 == Adding More Features
 
@@ -220,7 +222,7 @@ or you can add the Actuator using `spring-boot-starter-actuator`
 Remember to set `endpoints.default.web.enabled=true` if you want to see the Actuator endpoints in the webapp by default. E.g:
 
 ```
-$ java -p target/demo-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m demo/com.example.demo.DemoApplication --endpoints.default.web.enabled=true
+$ java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m spring.boot.java9/com.example.demo.DemoApplication --endpoints.default.web.enabled=true
 ...
 2017-09-08 11:49:28.011  INFO 22102 --- [           main] b.e.w.m.WebEndpointServletHandlerMapping : Mapped "{[/application/mappings],methods=[GET],produces=[application/vnd.spring-boot.actuator.v2+json || application/json]}" onto public java.lang.Object org.springframework.boot.endpoint.web.mvc.WebEndpointServletHandlerMapping$OperationHandler.handle(javax.servlet.http.HttpServletRequest,java.util.Map<java.lang.String, java.lang.String>)
 2017-09-08 11:49:28.011  INFO 22102 --- [           main] b.e.w.m.WebEndpointServletHandlerMapping : Mapped "{[/application/health],methods=[GET],produces=[application/vnd.spring-boot.actuator.v2+json || application/json]}" onto public java.lang.Object org.springframework.boot.endpoint.web.mvc.WebEndpointServletHandlerMapping$OperationHandler.handle(javax.servlet.http.HttpServletRequest,java.util.Map<java.lang.String, java.lang.String>)
@@ -233,7 +235,7 @@ $ java -p target/demo-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m demo/c
 https://docs.oracle.com/javase/9/tools/jlink.htm#JSWOR-GUID-CECAC52B-CFEE-46CB-8166-F17A8E9280E9[JLink] is a JDK tool that creates a self-contained binary image for a Java program (no need for a JRE or JDK at runtime). It works with Jigsaw modules, but only with explicit modules, not automatic ones, and most of the dependencies in a Spring Boot application only provide automatic modules. So this is the kind of thing you will see if you try to build an image:
 
 ```
-$ jlink -p target/demo-0.0.1-SNAPSHOT.jar:$CP:$JAVA_HOME/jmods --add-modules demo --output jre
+$ jlink -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP:$JAVA_HOME/jmods --add-modules demo --output jre
 Error: module-info.class not found for logback.core module
 ```
 
@@ -243,9 +245,9 @@ http://openjdk.java.net/jeps/295[AOT] is an (unsupported) feature of Java 9. The
 
 ```
 $ CP=`java -jar spring-boot-thin-wrapper-1.0.9.RELEASE.jar --thin.archive=. --thin.classpath`
-$ java -XX:DumpLoadedClassList=target/app.classlist -cp target/spring-boot-java-9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
-$ jaotc --output target/libDemo.so -J-cp -Jtarget/spring-boot-java-9-0.0.1-SNAPSHOT.jar:$CP `cat target/app.classlist | sed -e 's,/,.,g'`
-$ java -XX:AOTLibrary=target/libDemo.so -cp target/spring-boot-java-9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
+$ java -XX:DumpLoadedClassList=target/app.classlist -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
+$ jaotc --output target/libDemo.so -J-cp -Jtarget/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP `cat target/app.classlist | sed -e 's,/,.,g'`
+$ java -XX:AOTLibrary=target/libDemo.so -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
 ```
 
 You can add `-XX:+PrintAOT` to the `java` command line to see the classes being loaded from the shared library. Without that extra logging it's about 30% faster (600ms compared to 900ms). Adding Tomcat and actuators shows 2000ms compared to 2400. But that was without any other command line arguments; once we add `-noverify -XX:TieredStopAtLevel=1` the improvement isn't so dramatic (1480ms vs 1540ms) with actuator, and there isn't even an improvement without (690ms vs 630ms).

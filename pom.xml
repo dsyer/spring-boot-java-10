@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>spring-boot-java-9</artifactId>
+	<artifactId>spring-boot-java9</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>spring-boot-java-9</name>
+	<name>spring-boot-java9</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
