@@ -254,4 +254,6 @@ You can add `-XX:+PrintAOT` to the `java` command line to see the classes being 
 
 The above commands only compile the class from the boot classpath though (i.e. the JRE), so maybe including the application classes would speed things up enough to make it worthwhile. We have to use the Oracle JDK and some extra flags to get the app classes (`-XX:+UnlockCommercialFeatures -XX:+UseAppCDS`). Unfortunately when you do that `jaotc` fails because it can't compile some of the classes (AOP proxies, and ones that refer to stuff that isn't on the classpath). This is kind of a showstopper for a Spring Boot app because we use proxies a lot and also compile in references to classes that aren't used at runtime. Even if there was a way to automatically filter out the classes that would fail this way, the limitations listed in the Oracle documentation and associated articles make it seem unlikely that it would be hugely successful in practice.
 
+== Java 8
+
 Running with Java 8 (no AOT) is the same or faster, though, so there's not much incentive to use Java 9 (520ms for the vanilla app, 1490ms with actuator). Spring Boot 1.5.9 makes it a bit faster too, so (460ms and 1300ms).
