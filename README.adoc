@@ -279,3 +279,13 @@ Some Maven plugin versions need managing as well, e.g:
 ```
 
 The JAR plugin version above is the same as in Spring Boot 2.0 starter parent (so you won't need it if you use that parent pom). The Surefire version is not the same as any Spring Boot version, so you will need it to run tests.
+
+=== CDS
+
+http://openjdk.java.net/jeps/310[Common Data Sharing] extends to application classes in Java 10. It's quite a bit quicker on startup (but Java 10 is slower, so Java 8 might be quicker overall):
+
+```
+$ java -Xshare:off -XX:+UseAppCDS -XX:DumpLoadedClassList=hello.lst -cp target/classes/:$CP com.example.demo.DemoApplication
+$ java -Xshare:dump -XX:+UseAppCDS -XX:SharedClassListFile=hello.lst -XX:SharedArchiveFile=hello.jsa -cp $CP com.example.demo.DemoApplication
+$ java -Xshare:on -XX:+UseAppCDS -XX:SharedArchiveFile=hello.jsa -cp $CP com.example.demo.DemoApplication
+```
