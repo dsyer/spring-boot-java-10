@@ -257,3 +257,25 @@ The above commands only compile the class from the boot classpath though (i.e. t
 == Java 8
 
 Running with Java 8 (no AOT) is the same or faster, though, so there's not much incentive to use Java 9 (520ms for the vanilla app, 1490ms with actuator). Spring Boot 1.5.9 makes it a bit faster too, so (460ms and 1300ms).
+
+== Java 10
+
+Java 10 is nearly here, so it's worth checking that everything works. Here are a couple of things that may need tweaking:
+
+Depending on whether it is used by your app or not, you may have to add the JAXB api jar explicitly to your classpath (Spring Boot 2.0 has a version for it in its dependency management, Spring Boot 1.5 does not):
+
+```xml
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+```
+
+Some Maven plugin versions need managing as well, e.g:
+
+```xml
+		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+```
+
+The JAR plugin version above is the same as in Spring Boot 2.0 starter parent (so you won't need it if you use that parent pom). The Surefire version is not the same as any Spring Boot version, so you will need it to run tests.
