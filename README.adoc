@@ -32,7 +32,7 @@ If you are an Eclipse user, you might want to install the Java 9 support from th
 
 == Create a Spring Boot Application
 
-You can use the source code from https://github.com/dsyer/spring-boot-java9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.0 snapshots. Java 9 is an option for the generator so the `pom.xml` should show the Java version:
+You can use the source code from https://github.com/dsyer/spring-boot-java-9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.0 snapshots. Java 9 is an option for the generator so the `pom.xml` should show the Java version:
 
 .pom.xml
 ```
