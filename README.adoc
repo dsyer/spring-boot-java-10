@@ -32,7 +32,7 @@ If you are an Eclipse user, you might want to install the Java 9 support from th
 
 == Create a Spring Boot Application
 
-You can use the source code from https://github.com/dsyer/spring-boot-java9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.0 snapshots. Java 9 is an option for the generator so the `pom.xml` should show the Java version:
+You can use the source code from https://github.com/dsyer/spring-boot-java9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.2. Java 9 is an option for the generator so the `pom.xml` should show the Java version:
 
 .pom.xml
 ```
@@ -61,7 +61,7 @@ $ java -jar target/spring-boot-java9-0.0.1-SNAPSHOT.jar
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::  (v2.0.0.BUILD-SNAPSHOT)
+ :: Spring Boot ::  (v2.0.2.RELEASE)
 
 ...
 ```
@@ -105,7 +105,7 @@ $ java -cp target/classes/:$CP com.example.demo.DemoApplication
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::  (v2.0.0.BUILD-SNAPSHOT)
+ :: Spring Boot ::  (v2.0.2.RELEASE)
 
 ...
 ```
@@ -124,7 +124,7 @@ $ java -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.Demo
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::  (v2.0.0.BUILD-SNAPSHOT)
+ :: Spring Boot ::  (v2.0.2.RELEASE)
 
 ...
 ```
@@ -165,17 +165,17 @@ We need to add additional modules to the command line since the default is a muc
 ```
 $ java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP -m spring.boot.java9/com.example.demo.DemoApplication
 Exception in thread "main" java.lang.IllegalArgumentException: Cannot instantiate interface org.springframework.context.ApplicationContextInitializer : org.springframework.boot.context.ConfigurationWarningsApplicationContextInitializer
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.createSpringFactoriesInstances(SpringApplication.java:439)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.getSpringFactoriesInstances(SpringApplication.java:418)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.getSpringFactoriesInstances(SpringApplication.java:409)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.<init>(SpringApplication.java:266)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.<init>(SpringApplication.java:247)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.run(SpringApplication.java:1245)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.run(SpringApplication.java:1233)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.createSpringFactoriesInstances(SpringApplication.java:439)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.getSpringFactoriesInstances(SpringApplication.java:418)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.getSpringFactoriesInstances(SpringApplication.java:409)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.<init>(SpringApplication.java:266)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.<init>(SpringApplication.java:247)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.run(SpringApplication.java:1245)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.run(SpringApplication.java:1233)
 	at demo@0.0.1-SNAPSHOT/com.example.demo.DemoApplication.main(DemoApplication.java:10)
 Caused by: java.lang.NoClassDefFoundError: java/sql/SQLException
-	at spring.beans@5.0.0.BUILD-SNAPSHOT/org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:176)
-	at spring.boot@2.0.0.BUILD-SNAPSHOT/org.springframework.boot.SpringApplication.createSpringFactoriesInstances(SpringApplication.java:435)
+	at spring.beans@5.0.6.RELEASE/org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:176)
+	at spring.boot@2.0.2.RELEASE/org.springframework.boot.SpringApplication.createSpringFactoriesInstances(SpringApplication.java:435)
 	... 7 more
 Caused by: java.lang.ClassNotFoundException: java.sql.SQLException
 	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:582)
@@ -271,14 +271,12 @@ Depending on whether it is used by your app or not, you may have to add the JAXB
 		</dependency>
 ```
 
-Some Maven plugin versions need managing as well, e.g:
+For older versions of Spring Boot, some Maven plugin versions need managing as well, e.g:
 
 ```xml
 		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 ```
-
-The JAR plugin version above is the same as in Spring Boot 2.0 starter parent (so you won't need it if you use that parent pom). The Surefire version is not the same as any Spring Boot version, so you will need it to run tests.
 
 === CDS
 
