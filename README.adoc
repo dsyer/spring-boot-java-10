@@ -235,8 +235,9 @@ $ java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFA
 https://docs.oracle.com/javase/9/tools/jlink.htm#JSWOR-GUID-CECAC52B-CFEE-46CB-8166-F17A8E9280E9[JLink] is a JDK tool that creates a self-contained binary image for a Java program (no need for a JRE or JDK at runtime). It works with Jigsaw modules, but only with explicit modules, not automatic ones, and most of the dependencies in a Spring Boot application only provide automatic modules. So this is the kind of thing you will see if you try to build an image:
 
 ```
-$ jlink -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP:$JAVA_HOME/jmods --add-modules demo --output jre
-Error: module-info.class not found for logback.core module
+$ cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar target/demo.jar
+$ jlink -p target/demo.jar:$CP:$JAVA_HOME/jmods --add-modules demo --output jre
+Error: automatic module cannot be used with jlink: snakeyaml from file:///.../.m2/repository/org/yaml/snakeyaml/1.19/snakeyaml-1.19.jar
 ```
 
 == Ahead of Time Compilation (AOT)
@@ -244,13 +245,13 @@ Error: module-info.class not found for logback.core module
 http://openjdk.java.net/jeps/295[AOT] is an (unsupported) feature of Java 9. There are plenty of "Hello World" examples out there, which seem to show improved startup performance. Nothing much to show how to work with non-trivial apps. Here's a recipe:
 
 ```
-$ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=. --thin.classpath`
-$ java -XX:DumpLoadedClassList=target/app.classlist -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
-$ jaotc --output target/libDemo.so -J-cp -Jtarget/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP `cat target/app.classlist | sed -e 's,/,.,g'`
-$ java -XX:AOTLibrary=target/libDemo.so -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
+$ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=target/spring-boot-java9-0.0.1-SNAPSHOT.jar --thin.classpath`
+$ java -XX:DumpLoadedClassList=target/app.classlist -cp $CP com.example.demo.DemoApplication
+$ jaotc --output target/libDemo.so -J-cp -J$CP `cat target/app.classlist | sed -e 's,/,.,g'`
+$ java -XX:AOTLibrary=target/libDemo.so -cp $CP com.example.demo.DemoApplication
 ```
 
-You can add `-XX:+PrintAOT` to the `java` command line to see the classes being loaded from the shared library. Without that extra logging it's about 30% faster (600ms compared to 900ms). Adding Tomcat and actuators shows 2000ms compared to 2400. But that was without any other command line arguments; once we add `-noverify -XX:TieredStopAtLevel=1` the improvement isn't so dramatic (1490ms vs 1540ms) with actuator, or without (560ms vs 630ms).
+You can add `-XX:+PrintAOT` to the `java` command line to see the classes being loaded from the shared library. Without that extra logging it's about 15% faster (500ms compared to 600ms). Adding Tomcat and actuators shows 2000ms compared to 2400. But that was without any other command line arguments; once we add `-noverify -XX:TieredStopAtLevel=1` the improvement isn't so dramatic (1490ms vs 1540ms) with actuator, or without (560ms vs 630ms).
 
 The above commands only compile the class from the boot classpath though (i.e. the JRE), so maybe including the application classes would speed things up enough to make it worthwhile. We have to use the Oracle JDK and some extra flags to get the app classes (`-XX:+UnlockCommercialFeatures -XX:+UseAppCDS`). Unfortunately when you do that `jaotc` fails because it can't compile some of the classes (AOP proxies, and ones that refer to stuff that isn't on the classpath). This is kind of a showstopper for a Spring Boot app because we use proxies a lot and also compile in references to classes that aren't used at runtime. Even if there was a way to automatically filter out the classes that would fail this way, the limitations listed in the Oracle documentation and associated articles make it seem unlikely that it would be hugely successful in practice.
 
@@ -260,7 +261,7 @@ Running with Java 8 (no AOT) is the same or faster, though, so there's not much 
 
 === CDS
 
-http://openjdk.java.net/jeps/310[Common Data Sharing] extends to application classes in Java 10. It's quite a bit quicker on startup (but Java 10 is slower, so Java 8 might be comparable):
+http://openjdk.java.net/jeps/310[Common Data Sharing] extends to application classes in Java 10. It's quite a bit quicker on startup (but Java 10 is slower, so Java 8 might be comparable overall):
 
 ```
 $ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=target/spring-boot-java9-0.0.1-SNAPSHOT.jar --thin.classpath`
