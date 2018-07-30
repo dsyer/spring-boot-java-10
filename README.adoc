@@ -19,7 +19,7 @@ Available Java Versions
 $ sdk use java 10.0.1-zulu
 ```
 
-This downloads and installs the JDK at `~/.sdkmain/candidates/10.0.1-zulu` and puts it on your `PATH`:
+This downloads and installs the JDK at `~/.sdkman/candidates/10.0.1-zulu` and puts it on your `PATH`:
 
 ```
 $ java -version
@@ -260,7 +260,7 @@ Running with Java 8 (no AOT) is the same or faster, though, so there's not much 
 
 === CDS
 
-http://openjdk.java.net/jeps/310[Common Data Sharing] extends to application classes in Java 10. It's quite a bit quicker on startup (but Java 10 is slower, so Java 8 might be quicker overall):
+http://openjdk.java.net/jeps/310[Common Data Sharing] extends to application classes in Java 10. It's quite a bit quicker on startup (but Java 10 is slower, so Java 8 might be comparable):
 
 ```
 $ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=target/spring-boot-java9-0.0.1-SNAPSHOT.jar --thin.classpath`
