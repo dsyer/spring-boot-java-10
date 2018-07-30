@@ -1,47 +1,47 @@
-Java 9 is here, and the ecosystem is adapting. If you want to run Spring Boot apps in Java 9, the good news is it works fine (mostly), so here is how to get started as quickly as possible without stumbling on the newbie errors (like I did).
+Java 10 is here, and the ecosystem is adapting. If you want to run Spring Boot apps in Java 10, the good news is it works fine (mostly), so here is how to get started as quickly as possible without stumbling on the newbie errors (like I did).
 
-== Install Java 9
+== Install Java 10
 
-You can download the http://jdk.java.net/9/[OpenJDK builds] or you can use http://jdk.java.net/9/[SDK Man]:
+You can download the http://jdk.java.net/10/[OpenJDK builds] or you can use http://sdkman.io/[SDK Man]:
 
 ```
 $ sdk list java
 ================================================================================
 Available Java Versions
 ================================================================================
-     9.0.1-zulu                                                                    
-     9.0.1-oracle                                                                    
-     9.0.0-zulu                                                                    
+     10.0.2-oracle
+ > * 10.0.1-zulu
+     10.0.0-openjdk
      ...
      8u131-zulu                                                                    
      7u141-zulu                                                                    
      6u93-zulu                                                                     
-$ sdk use java 9.0.1-zulu
+$ sdk use java 10.0.1-zulu
 ```
 
-This downloads and installs the JDK at `~/.sdkmain/candidates/9.0.1-zulu` and puts it on your `PATH`:
+This downloads and installs the JDK at `~/.sdkmain/candidates/10.0.1-zulu` and puts it on your `PATH`:
 
 ```
 $ java -version
-openjdk version "9.0.1.3"
-OpenJDK Runtime Environment (Zulu build 9.0.1.3+11)
-OpenJDK 64-Bit Server VM (Zulu build 9.0.1.3+11, mixed mode)
+openjdk version "10.0.1" 2018-04-17
+OpenJDK Runtime Environment Zulu10.2+3 (build 10.0.1+9)
+OpenJDK 64-Bit Server VM Zulu10.2+3 (build 10.0.1+9, mixed mode)
 ```
 
 If you are an Eclipse user, you might want to install the Java 9 support from the https://marketplace.eclipse.org/content/java9-support-beta-oxygen[Eclipse Marketplace] (make sure you have Eclipse Oxygen 4.7 first). You don't have to run Eclipse with Java 9, but if you do you might need to change the https://wiki.eclipse.org/Configure_Eclipse_for_Java_9[ini file]. Once you have the Java 9 features installed you can add the JDK to your `Preferences -> Java -> Installed JREs`.
 
 == Create a Spring Boot Application
 
-You can use the source code from https://github.com/dsyer/spring-boot-java9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.2. Java 9 is an option for the generator so the `pom.xml` should show the Java version:
+You can use the source code from https://github.com/dsyer/spring-boot-java9[this repo], or you can generate an empty project for yourself. To generate a project, go to https://start.spring.io[Spring Initializr] and generate a default blank project using Spring Boot 2.0.3. Java 10 is an option for the generator so the `pom.xml` should show the Java version:
 
 .pom.xml
 ```
 	<properties>
-		<java.version>1.9</java.version>
+		<java.version>10</java.version>
 	</properties>
 ```
 
-The Maven wrapper that comes with the generated project, and the plugin versions in the parent POM all work with Java 9, so you can build a jar file on the command line:
+The Maven wrapper that comes with the generated project, and the plugin versions in the parent POM all work with Java 10, so you can build a jar file on the command line:
 
 ```
 $ ./mvnw clean install
@@ -50,7 +50,7 @@ $ ls target/*.jar
 spring-boot-java9-0.0.1-SNAPSHOT.jar
 ```
 
-The jar file is executable as usual:
+The jar file is executable as usual (use `...-exec.jar` if you are building from the source code of this README):
 
 ```
 $ java -jar target/spring-boot-java9-0.0.1-SNAPSHOT.jar 
@@ -61,7 +61,7 @@ $ java -jar target/spring-boot-java9-0.0.1-SNAPSHOT.jar
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::  (v2.0.2.RELEASE)
+ :: Spring Boot ::  (v2.0.3.RELEASE)
 
 ...
 ```
@@ -78,20 +78,20 @@ WARNING: Use --illegal-access=warn to enable warnings of further illegal reflect
 WARNING: All illegal access operations will be denied in a future release
 ```
 
-You can switch this off by adding `-illegal-access=deny` to the command line (the default in Java 9 is `permit`). Here's a https://jira.spring.io/browse/SPR-15859[Spring JIRA issue] tracking changes related to this warning.
+You can switch this off by adding `-illegal-access=deny` to the command line (the default in Java 10 is `permit`). Here's a https://jira.spring.io/browse/SPR-15859[Spring JIRA issue] tracking changes related to this warning. You can also use Spring Boot 2.1.0 (currently in snapshots), which pulls in Spring 5.1.0 and then the warning will go away.
 
 == Run Using an Explicit Classpath
 
-Java 9 supports the old command line format of Java 8, which is why the executable jar just works. We can also use an explicit class path and a main method, just to be sure that it works. First we need to generate a classpath. A useful tool for that is the https://github.com/dsyer/spring-boot-thin-launcher[Thin Jar Launcher], and in particular the `ThinJarWrapper` which can be downloaded from http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.9.RELEASE/spring-boot-thin-wrapper-1.0.9.RELEASE.jar[Maven Central]:
+Java 10 supports the old command line format of Java 8, which is why the executable jar just works. We can also use an explicit class path and a main method, just to be sure that it works. First we need to generate a classpath. A useful tool for that is the https://github.com/dsyer/spring-boot-thin-launcher[Thin Jar Launcher], and in particular the `ThinJarWrapper` which can be downloaded from http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.12.RELEASE/spring-boot-thin-wrapper-1.0.12.RELEASE.jar[Maven Central]:
 
 ```
-$ wget http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.9.RELEASE/spring-boot-thin-wrapper-1.0.9.RELEASE.jar
+$ wget http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-wrapper/1.0.12.RELEASE/spring-boot-thin-wrapper-1.0.12.RELEASE.jar
 ```
 
 and then we can run the wrapper with some command line arguments to make it print the classpath for the current project:
 
 ```
-$ CP=`java -jar spring-boot-thin-wrapper-1.0.9.RELEASE.jar --thin.archive=. --thin.classpath`
+$ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=. --thin.classpath`
 ```
 
 Then we can run our app like this (assuming the default class name from start.spring.io):
@@ -105,7 +105,7 @@ $ java -cp target/classes/:$CP com.example.demo.DemoApplication
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::  (v2.0.2.RELEASE)
+ :: Spring Boot ::  (v2.0.3.RELEASE)
 
 ...
 ```
@@ -124,14 +124,14 @@ $ java -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.Demo
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::  (v2.0.2.RELEASE)
+ :: Spring Boot ::  (v2.0.3.RELEASE)
 
 ...
 ```
 
 == Running Using Jigsaw
 
-Java 9 has other features for running applications. So instead of using the classpath we can use the Jigsaw (module system) features, relying on "automatic modules" to turn all the dependency jars into modules. The command line is slightly different, but the result is the same (except that the WARN logs are not emitted):
+Java 10 has other features for running applications. So instead of using the classpath we can use the Jigsaw (module system) features, relying on "automatic modules" to turn all the dependency jars into modules. The command line is slightly different, but the result is the same (except that the WARN logs are not emitted):
 
 ```
 java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAULT -m spring.boot.java9/com.example.demo.DemoApplication
@@ -146,7 +146,7 @@ java -p target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP --add-modules ALL-DEFAUL
  ...
 ```
 
-The app runs as before, but note that the Spring Boot version information is not printed because it is not accessible the same way from inside Spring Boot. Here are the pieces of the command line, blow by blow:
+The app runs as before, but note that the Spring Boot version information is not printed because it is not accessible the same way from inside Spring Boot. Here are the pieces of the command line, blow by blow...
 
 === Module Path
 
@@ -244,7 +244,7 @@ Error: module-info.class not found for logback.core module
 http://openjdk.java.net/jeps/295[AOT] is an (unsupported) feature of Java 9. There are plenty of "Hello World" examples out there, which seem to show improved startup performance. Nothing much to show how to work with non-trivial apps. Here's a recipe:
 
 ```
-$ CP=`java -jar spring-boot-thin-wrapper-1.0.9.RELEASE.jar --thin.archive=. --thin.classpath`
+$ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=. --thin.classpath`
 $ java -XX:DumpLoadedClassList=target/app.classlist -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
 $ jaotc --output target/libDemo.so -J-cp -Jtarget/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP `cat target/app.classlist | sed -e 's,/,.,g'`
 $ java -XX:AOTLibrary=target/libDemo.so -cp target/spring-boot-java9-0.0.1-SNAPSHOT.jar:$CP com.example.demo.DemoApplication
@@ -258,31 +258,12 @@ The above commands only compile the class from the boot classpath though (i.e. t
 
 Running with Java 8 (no AOT) is the same or faster, though, so there's not much incentive to use Java 9 (520ms for the vanilla app, 1490ms with actuator). Spring Boot 1.5.9 makes it a bit faster too, so (460ms and 1300ms).
 
-== Java 10
-
-Java 10 is nearly here, so it's worth checking that everything works. Here are a couple of things that may need tweaking:
-
-Depending on whether it is used by your app or not, you may have to add the JAXB api jar explicitly to your classpath (Spring Boot 2.0 has a version for it in its dependency management, Spring Boot 1.5 does not):
-
-```xml
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>
-```
-
-For older versions of Spring Boot, some Maven plugin versions need managing as well, e.g:
-
-```xml
-		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
-		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-```
-
 === CDS
 
 http://openjdk.java.net/jeps/310[Common Data Sharing] extends to application classes in Java 10. It's quite a bit quicker on startup (but Java 10 is slower, so Java 8 might be quicker overall):
 
 ```
+$ CP=`java -jar spring-boot-thin-wrapper-1.0.12.RELEASE.jar --thin.archive=target/spring-boot-java9-0.0.1-SNAPSHOT.jar --thin.classpath`
 $ java -Xshare:off -XX:+UseAppCDS -XX:DumpLoadedClassList=hello.lst -cp target/classes/:$CP com.example.demo.DemoApplication
 $ java -Xshare:dump -XX:+UseAppCDS -XX:SharedClassListFile=hello.lst -XX:SharedArchiveFile=hello.jsa -cp $CP com.example.demo.DemoApplication
 $ java -Xshare:on -XX:+UseAppCDS -XX:SharedArchiveFile=hello.jsa -cp $CP com.example.demo.DemoApplication

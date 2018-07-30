@@ -1,3 +1,6 @@
+/spring-boot-thin-wrapper*.jar
+/hello.*
+
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
