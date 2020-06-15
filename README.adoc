@@ -78,7 +78,7 @@ WARNING: Use --illegal-access=warn to enable warnings of further illegal reflect
 WARNING: All illegal access operations will be denied in a future release
 ```
 
-You can switch this off by adding `-illegal-access=deny` to the command line (the default in Java 10 is `permit`). Here's a https://jira.spring.io/browse/SPR-15859[Spring JIRA issue] tracking changes related to this warning. You can also use Spring Boot 2.1.0 (currently in snapshots), which pulls in Spring 5.1.0 and then the warning will go away.
+You can switch this off by adding `--illegal-access=deny` to the command line (the default in Java 10 is `permit`). Here's a https://jira.spring.io/browse/SPR-15859[Spring JIRA issue] tracking changes related to this warning. You can also use Spring Boot 2.1.0 (currently in snapshots), which pulls in Spring 5.1.0 and then the warning will go away.
 
 == Run Using an Explicit Classpath
 
